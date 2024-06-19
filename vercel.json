@@ -11,6 +11,11 @@
         "src": "/(.*)",
         "dest": "chatbot.py"
       }
-    ]
+    ],
+    "build": {
+      "env": {
+        "PIP_INSTALL": "--requirement=requirements.txt"
+      }
+    }
     
   }
