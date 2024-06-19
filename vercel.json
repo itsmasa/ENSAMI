@@ -13,8 +13,7 @@
     ],
     "build": {
       "env": {
-        "PIP_INSTALL": "--requirement=requirements.txt",
-        "CARGO_INSTALL_ROOT": "/vercel"
+        "PIP_INSTALL": "--requirement=requirements.txt"
       }
     }
     
