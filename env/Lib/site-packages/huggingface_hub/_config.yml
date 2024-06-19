@@ -1,0 +1,3 @@
+# Exclude files and directories from being processed by Jekyll
+exclude:
+  - env/Lib/site-packages/huggingface_hub/templates/
