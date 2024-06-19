@@ -5,6 +5,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 from dotenv import load_dotenv
+from streamlit_chat import message
 import os 
 
 # Load environment variables from .env file
@@ -30,11 +31,11 @@ embeddings = OpenAIEmbeddings(api_key=openai_api_key)
 vectorstore = FAISS.from_documents(texts, embeddings)
 
 # Streamlit app
-st.title("School Chatbot")
+st.title("Chatbot ENSAMI")
 
-# Initialize chat history in session state
-if "chat_history" not in st.session_state:
-    st.session_state["chat_history"] = []
+# Initialize session state
+if "history" not in st.session_state:
+    st.session_state["history"] = []
 
 def chat_with_gpt(messages):
     response = openai.ChatCompletion.create(
@@ -43,32 +44,64 @@ def chat_with_gpt(messages):
     )
     return response['choices'][0]['message']['content']
 
-query = st.text_input("Enter your query:")
-if query:
+def conversation_chat(query):
     try:
         # Retrieve relevant documents from the vector store
         relevant_docs = vectorstore.similarity_search(query)
         context = " ".join([doc.page_content for doc in relevant_docs])
-        
+
         # Prepare the chat history for the model
-        messages = [{"role": "system", "content": "You are ENSAMI, a helpful assistant for ENSAM school. Provide accurate and helpful information about the school."}]
-        for q, a in st.session_state["chat_history"]:
+        messages = [{"role": "system", "content": "Vous êtes ENSAMI, un assistant utile pour l'école ENSAM Rabat. Fournissez des informations précises et utiles sur l'école."}]
+        for q, a in st.session_state["history"]:
             messages.append({"role": "user", "content": q})
             messages.append({"role": "assistant", "content": a})
-        
+
         # Add the latest query
         messages.append({"role": "user", "content": query})
         messages.append({"role": "system", "content": context})
-        
+
         # Get the response from the chat model
         response = chat_with_gpt(messages)
-        
-        # Update chat history
-        st.session_state["chat_history"].append((query, response))
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
 
-# Display the chat history
-for query, response in st.session_state["chat_history"]:
-    st.markdown(f"**You:** {query}")
-    st.markdown(f"**Chatbot:** {response}")
+        # Update chat history
+        st.session_state["history"].append((query, response))
+        return response
+    except Exception as e:
+        st.error(f"Une erreur est survenue : {e}")
+        return None
+
+def initialize_session_state():
+    if 'history' not in st.session_state:
+        st.session_state['history'] = []
+
+    if 'generated' not in st.session_state:
+        st.session_state['generated'] = ["Bonjour Je suis ENSAMI! Comment puis-je vous aider aujourd'hui ?"]
+
+    if 'past' not in st.session_state:
+        st.session_state['past'] = ["Salut !"]
+
+def display_chat_history():
+    reply_container = st.container()
+    container = st.container()
+
+    with container:
+        with st.form(key='my_form', clear_on_submit=True):
+            user_input = st.text_input("Entrez votre question :", placeholder="Posez une question sur ENSAM Rabat", key='input')
+            submit_button = st.form_submit_button(label='Envoyer')
+
+        if submit_button and user_input:
+            output = conversation_chat(user_input)
+
+            st.session_state['past'].append(user_input)
+            st.session_state['generated'].append(output)
+
+    if st.session_state['generated']:
+        with reply_container:
+            for i in range(len(st.session_state['generated'])):
+                message(st.session_state["past"][i], is_user=True, key=str(i) + '_user', avatar_style="thumbs")
+                message(st.session_state["generated"][i], key=str(i), avatar_style="fun-emoji")
+
+# Initialize session state
+initialize_session_state()
+# Display chat history
+display_chat_history()
