@@ -2,8 +2,7 @@
     "builds": [
       {
         "src": "chatbot.py",
-        "use": "@vercel/python",
-        "install": "pip install -r requirements.txt"
+        "use": "@vercel/python"
       }
     ],
     "routes": [
