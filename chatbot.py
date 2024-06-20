@@ -54,7 +54,7 @@ def conversation_chat(query):
         context = " ".join([doc.page_content for doc in relevant_docs])
 
         # Prepare the chat history for the model
-        messages = [{"role": "system", "content": "Vous êtes ENSAMI, un assistant utile pour l'école ENSAM Rabat. Fournissez des informations précises et utiles sur l'école."}]
+        messages = [{"role": "system", "content": "Vous êtes ENSAMi, un assistant utile pour l'école ENSAM Rabat. Fournissez des informations précises et utiles sur l'école."}]
         for q, a in st.session_state["history"]:
             messages.append({"role": "user", "content": q})
             messages.append({"role": "assistant", "content": a})
@@ -78,7 +78,7 @@ def initialize_session_state():
         st.session_state['history'] = []
 
     if 'generated' not in st.session_state:
-        st.session_state['generated'] = ["Bonjour Je suis ENSAMI! Comment puis-je vous aider aujourd'hui ?"]
+        st.session_state['generated'] = ["Bonjour Je suis ENSAMi! Avez vous des questions sur l'ENSAM Rabat ?"]
 
     if 'past' not in st.session_state:
         st.session_state['past'] = ["Salut !"]
