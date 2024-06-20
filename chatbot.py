@@ -30,8 +30,11 @@ embeddings = OpenAIEmbeddings(api_key=openai_api_key)
 # Create a vector store from the PDF text chunks
 vectorstore = FAISS.from_documents(texts, embeddings)
 
+# Set the page configuration
+st.set_page_config(page_title="ENSAMi", page_icon="ensamii.png")
+
 # Streamlit app
-st.title("Chatbot ENSAMI")
+st.title("ChatBot-ENSAMi 📚👨‍🎓")
 
 # Initialize session state
 if "history" not in st.session_state:
@@ -98,8 +101,15 @@ def display_chat_history():
     if st.session_state['generated']:
         with reply_container:
             for i in range(len(st.session_state['generated'])):
+                # Display user message
                 message(st.session_state["past"][i], is_user=True, key=str(i) + '_user', avatar_style="thumbs")
-                message(st.session_state["generated"][i], key=str(i), avatar_style="fun-emoji")
+                
+                # Display bot response with custom avatar without emoji
+                col1, col2 = st.columns([1, 9])
+                with col1:
+                    st.image("ensamii.png", width=50)
+                with col2:
+                    st.write(st.session_state["generated"][i])
 
 # Initialize session state
 initialize_session_state()
