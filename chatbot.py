@@ -78,7 +78,7 @@ def initialize_session_state():
         st.session_state['history'] = []
 
     if 'generated' not in st.session_state:
-        st.session_state['generated'] = ["Bonjour Je suis ENSAMi! Avez vous des questions sur l'ENSAM Rabat ?"]
+        st.session_state['generated'] = ["Bonjour Je suis ENSAMi! Avez-vous des questions sur l'ENSAM Rabat ?"]
 
     if 'past' not in st.session_state:
         st.session_state['past'] = ["Salut !"]
