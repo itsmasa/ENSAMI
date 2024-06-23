@@ -16,7 +16,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
 
 # Load the PDF file
-pdf_path = "ENSAMFINAL.pdf"
+pdf_path = "ENSAMFINAL1.pdf"
 loader = PyPDFLoader(pdf_path)
 data = loader.load()
 
