@@ -6,7 +6,9 @@ from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 from dotenv import load_dotenv
 from streamlit_chat import message
-import os 
+import os
+from gtts import gTTS
+import base64
 
 # Load environment variables from .env file
 load_dotenv()
@@ -83,6 +85,20 @@ def initialize_session_state():
     if 'past' not in st.session_state:
         st.session_state['past'] = ["Salut !"]
 
+def text_to_speech(text, lang='fr'):
+    tts = gTTS(text=text, lang=lang)
+    tts.save("response.mp3")
+    with open("response.mp3", "rb") as audio_file:
+        audio_bytes = audio_file.read()
+    b64_audio = base64.b64encode(audio_bytes).decode()
+    audio_html = f"""
+    <audio controls>
+        <source src="data:audio/mp3;base64,{b64_audio}" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+    """
+    return audio_html
+
 def display_chat_history():
     reply_container = st.container()
     container = st.container()
@@ -110,6 +126,10 @@ def display_chat_history():
                     st.image("ensamii.png", width=50)
                 with col2:
                     st.write(st.session_state["generated"][i])
+
+                    # Add text-to-speech button
+                    audio_html = text_to_speech(st.session_state["generated"][i])
+                    st.markdown(audio_html, unsafe_allow_html=True)
 
 # Initialize session state
 initialize_session_state()
