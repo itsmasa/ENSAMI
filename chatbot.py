@@ -14,7 +14,7 @@ import base64
 load_dotenv()
 
 # Initialize OpenAI API key
-openai_api_key = os.getenv("OPENAI_API_KEY")
+openai_api_key = st.secrets["openai"]["api_key"]
 openai.api_key = openai_api_key
 
 # Load the PDF file
